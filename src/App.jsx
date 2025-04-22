@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState } from 'react';
 import ProductCard from './components/ProductCard';
 import './App.css';
@@ -30,12 +31,34 @@ const initialProducts = [
 ];
 
 function App() {
+  const [products, setProducts] = useState(initialProducts);
 
- 
+  const handleRatingSubmit = (productId, newRating) => {
+    const updatedProducts = products.map((product) => {
+      if (product.id === productId) {
+        const newTotalRatings = product.totalRatings + 1;
+        const newAvgRating = ((product.avgRating * product.totalRatings) + newRating) / newTotalRatings;
+        return {
+          ...product,
+          avgRating: newAvgRating,
+          totalRatings: newTotalRatings
+        };
+      }
+      return product;
+    });
+    setProducts(updatedProducts);
+  };
 
   return (
     <div>
-     {/* code here */}
+      <h1>Product Ratings</h1>
+      {products.map((product) => (
+        <ProductCard
+          key={product.id}
+          product={product}
+          onRatingSubmit={handleRatingSubmit}
+        />
+      ))}
     </div>
   );
 }
